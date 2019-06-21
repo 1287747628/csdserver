@@ -1,0 +1,1 @@
+nohup java -jar csdserver-0.0.1-SNAPSHOT.jar >csdserver.log &
