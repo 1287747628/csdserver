@@ -4,17 +4,22 @@ import com.alibaba.fastjson.JSON;
 import com.fonsview.csdserver.service.ReplyService;
 import com.fonsview.csdserver.vo.InjectTask;
 import com.fonsview.csdserver.vo.ReplyTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 public class InjectController {
+
+    private static final Logger logger = LoggerFactory.getLogger(InjectController.class);
 
     @Resource
     private ReplyService replyService;
@@ -32,7 +37,7 @@ public class InjectController {
         //
         int urlNum = task.getContentUrls() == null ? 0 : task.getContentUrls().size();
         long costTime = System.currentTimeMillis() - startTime;
-        System.out.println("receive task:" + task.getTaskid() + " ,size:" + urlNum + " ,cost:" + costTime + "ms");
+        logger.info("receive task:{} ,size:{} ,cost:{}ms", task.getTaskid(), urlNum, costTime);
         return JSON.toJSONString(resp);
     }
 
@@ -46,8 +51,12 @@ public class InjectController {
         ReplyTask task = JSON.parseObject(taskStr, ReplyTask.class);
         int urlNum = task.getContentUrls() == null ? 0 : task.getContentUrls().size();
         long costTime = System.currentTimeMillis() - startTime;
-        System.out.println("fcrs result:" + task.getTaskid() + " ,size:" + urlNum + " ,cost:" + costTime + "ms");
+        logger.info("fcrs result:{} ,size:{} ,cost:{}ms", task.getTaskid(), urlNum, costTime);
         return JSON.toJSONString(resp);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Date().toString());
     }
 
 
