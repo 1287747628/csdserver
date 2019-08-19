@@ -36,10 +36,9 @@ public class InjectController {
             throw new RuntimeException("receive task exception");
         }
         //
-        replyService.addTask(task);
-        //
         Map<String, String> resp = new HashMap<>();
         if (sendTaskService.dealSuccess()) {
+            replyService.addTask(task);
             resp.put("resultCode", "0");
             resp.put("description", "success");
         }else{
