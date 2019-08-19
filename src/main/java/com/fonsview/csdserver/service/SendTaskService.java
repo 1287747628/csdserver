@@ -6,4 +6,6 @@ public interface SendTaskService {
 
     void sendTask(InjectTask task);
 
+    boolean dealSuccess();
+
 }

@@ -36,7 +36,9 @@ public class ReplyServiceImpl implements ReplyService {
             while (true) {
                 try {
                     InjectTask task = taskQueue.take();
-                    sendTaskService.sendTask(task);
+                    if (sendTaskService.dealSuccess()) {
+                        sendTaskService.sendTask(task);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -2,6 +2,7 @@ package com.fonsview.csdserver.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.fonsview.csdserver.service.ReplyService;
+import com.fonsview.csdserver.service.SendTaskService;
 import com.fonsview.csdserver.vo.InjectTask;
 import com.fonsview.csdserver.vo.ReplyTask;
 import org.slf4j.Logger;
@@ -23,17 +24,28 @@ public class InjectController {
 
     @Resource
     private ReplyService replyService;
+    @Resource
+    private SendTaskService sendTaskService;
 
     @RequestMapping(value = "/csd/api/contentDeleteReq", method = RequestMethod.POST,
             consumes = "application/json", produces = "application/json")
     public String injectTask(@RequestBody InjectTask task) {
         long startTime = System.currentTimeMillis();
         //
+        if (!sendTaskService.dealSuccess()) {
+            throw new RuntimeException("receive task exception");
+        }
+        //
         replyService.addTask(task);
         //
         Map<String, String> resp = new HashMap<>();
-        resp.put("resultCode", "0");
-        resp.put("description", "success");
+        if (sendTaskService.dealSuccess()) {
+            resp.put("resultCode", "0");
+            resp.put("description", "success");
+        }else{
+            resp.put("resultCode", "-1");
+            resp.put("description", "fail");
+        }
         //
         int urlNum = task.getContentUrls() == null ? 0 : task.getContentUrls().size();
         long costTime = System.currentTimeMillis() - startTime;

@@ -11,9 +11,12 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 @Service
 public class SendTaskServiceImpl implements SendTaskService {
+
+    private final Random random = new Random();
 
     @Async
     @Override
@@ -30,7 +33,11 @@ public class SendTaskServiceImpl implements SendTaskService {
         if (task.getContentUrls() != null && !task.getContentUrls().isEmpty()) {
             for (String url : task.getContentUrls()) {
                 ReplyContent replyContent = new ReplyContent();
-                replyContent.setStatus(2);
+                if (dealSuccess()) {
+                    replyContent.setStatus(2);
+                } else {
+                    replyContent.setStatus(4);
+                }
                 replyContent.setUrl(url);
                 replyTask.getContentUrls().add(replyContent);
             }
@@ -43,4 +50,21 @@ public class SendTaskServiceImpl implements SendTaskService {
         int urlNum = task.getContentUrls() == null ? 0 : task.getContentUrls().size();
         System.out.println("reply task:" + task.getTaskid() + " ,size:" + urlNum + " ,cost:" + costTime + "ms");
     }
+
+    @Override
+    public boolean dealSuccess() {
+        int i = random.nextInt(20);
+        if (i == 5) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        SendTaskService sendTaskService = new SendTaskServiceImpl();
+        for (int i = 0; i < 10; i++) {
+            System.out.println(sendTaskService.dealSuccess());
+        }
+    }
+
 }
